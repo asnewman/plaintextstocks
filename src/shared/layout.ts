@@ -1,5 +1,5 @@
 export function generateHTMLPage(title: string, content: string, includeHeader: boolean = true): string {
-  const header = includeHeader ? `plaintextstocks.com
+  const header = includeHeader ? `plaintextstocks
 ================
 ` : '';
 
