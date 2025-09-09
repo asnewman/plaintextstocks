@@ -1,9 +1,28 @@
-export function generateHTMLPage(title: string, content: string, includeHeader: boolean = true): string {
+export interface PageMetrics {
+  startTime: number;
+  dataSize?: number;
+}
+
+export function generateHTMLPage(
+  title: string, 
+  content: string, 
+  includeHeader: boolean = true,
+  metrics?: PageMetrics
+): string {
   const header = includeHeader ? `plaintextstocks
 ================
 ` : '';
 
-  return `<!DOCTYPE html>
+  // Calculate the HTML size (will be calculated after generation)
+  let footer = '';
+  if (metrics) {
+    const renderTime = Date.now() - metrics.startTime;
+    footer = `
+────────────────────────────────────────────────────────────────
+Generated in ${renderTime}ms | Size: [[SIZE_PLACEHOLDER]]KB`;
+  }
+
+  const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -23,8 +42,16 @@ pre { margin: 0; }
 </head>
 <body>
 <pre>
-${header}${content}
+${header}${content}${footer}
 </pre>
 </body>
 </html>`;
+
+  // Calculate actual size and replace placeholder
+  if (metrics) {
+    const sizeInKB = (new TextEncoder().encode(html).length / 1024).toFixed(1);
+    return html.replace('[[SIZE_PLACEHOLDER]]', sizeInKB);
+  }
+  
+  return html;
 }

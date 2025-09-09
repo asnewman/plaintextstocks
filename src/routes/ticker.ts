@@ -1,5 +1,5 @@
 import type { StockData, RouteResponse } from '../shared/types';
-import { generateHTMLPage } from '../shared/layout';
+import { generateHTMLPage, type PageMetrics } from '../shared/layout';
 import { 
   formatPrice, 
   formatChange, 
@@ -228,12 +228,17 @@ VOLUME:    ${formatVolume(stock.volume)}`;
 }
 
 export async function handleTickerRoute(ticker: string): Promise<RouteResponse> {
+  const startTime = Date.now();
+  
   // Validate ticker format
   if (!/^[A-Za-z]{1,5}$/.test(ticker)) {
+    const metrics: PageMetrics = { startTime };
     return {
       html: generateHTMLPage(
         'Error - PlaintextStocks',
-        `ERROR: Invalid ticker format. Use /TICKER (e.g., /AAPL)`
+        `ERROR: Invalid ticker format. Use /TICKER (e.g., /AAPL)`,
+        true,
+        metrics
       ),
       status: 400
     };
@@ -243,20 +248,26 @@ export async function handleTickerRoute(ticker: string): Promise<RouteResponse> 
   const stockData = await fetchStockData(ticker.toUpperCase());
   
   if (!stockData) {
+    const metrics: PageMetrics = { startTime };
     return {
       html: generateHTMLPage(
         'Error - PlaintextStocks',
-        `ERROR: Unable to fetch data for ${ticker.toUpperCase()}`
+        `ERROR: Unable to fetch data for ${ticker.toUpperCase()}`,
+        true,
+        metrics
       ),
       status: 404
     };
   }
 
   // Generate and return HTML
+  const metrics: PageMetrics = { startTime };
   return {
     html: generateHTMLPage(
       `${stockData.symbol} - PlaintextStocks`,
-      generateStockContent(stockData)
+      generateStockContent(stockData),
+      true,
+      metrics
     ),
     status: 200
   };
