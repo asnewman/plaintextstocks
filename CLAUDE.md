@@ -117,7 +117,6 @@ AMZN      155.67   (-8.90)   -5.41%
 - Test on slow connections and old browsers
 
 ## What NOT to Include
-- Charts or graphs
 - Company logos
 - User accounts or authentication
 - Comments or social features

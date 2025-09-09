@@ -21,7 +21,7 @@ const server = Bun.serve({
 
     // Ticker route - matches /XXXXX pattern
     const tickerMatch = pathname.match(/^\/([A-Za-z]{1,5})$/);
-    if (tickerMatch) {
+    if (tickerMatch && tickerMatch[1]) {
       const ticker = tickerMatch[1];
       const { html, status } = await handleTickerRoute(ticker);
       return new Response(html, {

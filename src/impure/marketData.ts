@@ -18,7 +18,8 @@ export async function fetchStockData(symbol: string): Promise<StockData | null> 
     // Yahoo Finance provides a simple query API that returns JSON
     // This endpoint doesn't require authentication
     const upperSymbol = symbol.toUpperCase();
-    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(upperSymbol)}`;
+    // Fetch 1-day data with 5-minute intervals
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(upperSymbol)}?interval=5m&range=1d`;
 
     const response = await fetch(url, {
       headers: {
@@ -41,6 +42,15 @@ export async function fetchStockData(symbol: string): Promise<StockData | null> 
     const result = data.chart.result[0];
     const quote = result.meta;
 
+    // Extract intraday data if available
+    let intradayPrices: number[] | undefined;
+    let intradayTimestamps: number[] | undefined;
+    
+    if (result.indicators?.quote?.[0]?.close && result.timestamp) {
+      intradayPrices = result.indicators.quote[0].close.filter((p: any) => p !== null);
+      intradayTimestamps = result.timestamp;
+    }
+
     // Extract the data we need
     const stockData: StockData = {
       symbol: quote.symbol,
@@ -54,7 +64,9 @@ export async function fetchStockData(symbol: string): Promise<StockData | null> 
       pe: quote.peRatio,
       fiftyTwoWeekLow: quote.fiftyTwoWeekLow,
       fiftyTwoWeekHigh: quote.fiftyTwoWeekHigh,
-      lastUpdated: new Date()
+      lastUpdated: new Date(),
+      intradayPrices,
+      intradayTimestamps
     };
 
     return stockData;
