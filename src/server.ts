@@ -1,3 +1,4 @@
+import { handleHomeRoute } from './routes/home';
 import { handleTickerRoute } from './routes/ticker';
 
 const PORT = process.env.PORT || 3456;
@@ -8,6 +9,14 @@ const server = Bun.serve({
     const url = new URL(req.url);
     const pathname = url.pathname;
 
+    // Home
+    if (pathname === '/') {
+      const { html, status } = await handleHomeRoute();
+      return new Response(html, {
+        status,
+        headers: { 'Content-Type': 'text/html' }
+      });
+    }
 
     // Ticker route - matches /XXXXX pattern
     const tickerMatch = pathname.match(/^\/([A-Za-z]{1,5})$/);
