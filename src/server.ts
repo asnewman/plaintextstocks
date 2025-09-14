@@ -1,6 +1,4 @@
-import { handleHomeRoute } from '../routes/home';
-import { handleTickerRoute } from '../routes/ticker';
-import { handle404Route } from '../routes/404';
+import { handleTickerRoute } from './routes/ticker';
 
 const PORT = process.env.PORT || 3456;
 
@@ -10,14 +8,6 @@ const server = Bun.serve({
     const url = new URL(req.url);
     const pathname = url.pathname;
 
-    // Home route
-    if (pathname === '/') {
-      const { html, status } = handleHomeRoute();
-      return new Response(html, {
-        status,
-        headers: { 'Content-Type': 'text/html' }
-      });
-    }
 
     // Ticker route - matches /XXXXX pattern
     const tickerMatch = pathname.match(/^\/([A-Za-z]{1,5})$/);
@@ -31,9 +21,8 @@ const server = Bun.serve({
     }
 
     // 404 for any other routes
-    const { html, status } = handle404Route();
-    return new Response(html, {
-      status,
+    return new Response("404", {
+      status: 404,
       headers: { 'Content-Type': 'text/html' }
     });
   }

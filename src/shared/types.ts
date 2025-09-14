@@ -11,8 +11,6 @@ export interface StockData {
   fiftyTwoWeekLow?: number;
   fiftyTwoWeekHigh?: number;
   lastUpdated: Date;
-  intradayPrices?: number[];
-  intradayTimestamps?: number[];
 }
 
 export interface RouteResponse {

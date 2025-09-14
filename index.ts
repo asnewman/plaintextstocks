@@ -1,1 +1,1 @@
-import './src/impure/server';
+import './src/server';
