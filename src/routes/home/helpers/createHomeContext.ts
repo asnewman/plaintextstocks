@@ -21,9 +21,17 @@ export interface MarketData {
   lastUpdated: Date;
 }
 
+export interface InterestRateData {
+  thirtyYearFixed: number;
+  fifteenYearFixed: number;
+  fiveOneARM: number;
+  lastUpdated: Date;
+}
+
 export interface HomeContext {
   startTime: number;
   marketData?: MarketData | null;
+  interestRateData?: InterestRateData | null;
   content?: string;
   error?: string;
 }

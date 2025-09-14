@@ -2,8 +2,10 @@ import type { RouteResponse } from '../../shared/types';
 import { asyncPipe } from '../../shared/transformers/asyncPipe';
 import { initializeContext } from './helpers/initializeContext';
 import { fetchMarketData } from './helpers/fetchMarketData';
+import { fetchInterestRateData } from './helpers/fetchInterestRateData';
 import { buildHeader } from './helpers/buildHeader';
 import { buildMarketStats } from './helpers/buildMarketStats';
+import { buildInterestRate } from './helpers/buildInterestRate';
 import { buildFooter } from './helpers/buildFooter';
 import { generateResponse } from './helpers/generateResponse';
 
@@ -13,8 +15,10 @@ export const handleHomeRoute = (): Promise<RouteResponse> =>
   asyncPipe(
     initializeContext(),
     fetchMarketData,
+    fetchInterestRateData,
     buildHeader,
     buildMarketStats,
+    buildInterestRate,
     buildFooter,
     generateResponse
   )(null);
