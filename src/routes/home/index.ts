@@ -4,6 +4,7 @@ import { initializeContext } from './helpers/initializeContext';
 import { fetchMarketData } from './helpers/fetchMarketData';
 import { fetchInterestRateData } from './helpers/fetchInterestRateData';
 import { buildHeader } from './helpers/buildHeader';
+import { buildTickerSearch } from './helpers/buildTickerSearch';
 import { buildMarketStats } from './helpers/buildMarketStats';
 import { buildInterestRate } from './helpers/buildInterestRate';
 import { buildFooter } from './helpers/buildFooter';
@@ -17,6 +18,7 @@ export const handleHomeRoute = (): Promise<RouteResponse> =>
     fetchMarketData,
     fetchInterestRateData,
     buildHeader,
+    buildTickerSearch,
     buildMarketStats,
     buildInterestRate,
     buildFooter,
