@@ -1,7 +1,22 @@
 import type { HomeContext, InterestRateData } from './createHomeContext';
 
+// Cache for mortgage rate data with 5-minute expiration
+interface CacheEntry {
+  data: InterestRateData;
+  timestamp: number;
+}
+
+let cache: CacheEntry | null = null;
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
+
 // Scrape mortgage rate data from Mortgage News Daily only
 export const fetchInterestRateData = async (ctx: HomeContext): Promise<HomeContext> => {
+  // Check if we have valid cached data
+  if (cache && (Date.now() - cache.timestamp) < CACHE_DURATION) {
+    console.log("Using cached mortgage interest rate data");
+    return { ...ctx, interestRateData: cache.data };
+  }
+
   console.log("fetching mortgage interest rate data from Mortgage News Daily");
 
   try {
@@ -79,6 +94,12 @@ export const fetchInterestRateData = async (ctx: HomeContext): Promise<HomeConte
       fifteenYearFixed: parsedFifteenYear || parsedThirtyYear - 0.5, // Estimate if not found
       fiveOneARM: parsedThirtyYear - 0.75, // Estimate ARM rate as typically lower
       lastUpdated: new Date(),
+    };
+
+    // Cache the successful result
+    cache = {
+      data: interestRateData,
+      timestamp: Date.now()
     };
 
     console.log('Successfully scraped mortgage rates from Mortgage News Daily:', interestRateData);
